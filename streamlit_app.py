@@ -1,9 +1,13 @@
+# Christian Dezha-Bolteada
+# Visual Analytics Data App Assignment
+# September 28th, 2026
+
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import math
 
-st.title("Data App Assignment, on July 14th")
+st.title("Data App Assignment, on September 28th, 2026")
 
 st.write("### Input Data and Examples")
 df = pd.read_csv("Superstore_Sales_utf8.csv", parse_dates=True)
@@ -22,7 +26,7 @@ st.bar_chart(df.groupby("Category", as_index=False).sum(), x="Category", y="Sale
 df["Order_Date"] = pd.to_datetime(df["Order_Date"])
 df.set_index('Order_Date', inplace=True)
 # Here the Grouper is using our newly set index to group by Month ('M')
-sales_by_month = df.filter(items=['Sales']).groupby(pd.Grouper(freq='M')).sum()
+sales_by_month = df.filter(items=['Sales']).groupby(pd.Grouper(freq='ME')).sum()
 
 st.dataframe(sales_by_month)
 
