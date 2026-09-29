@@ -33,6 +33,8 @@ st.dataframe(sales_by_month)
 # Here the grouped months are the index and automatically used for the x axis
 st.line_chart(sales_by_month, y="Sales")
 
+st.header("Data App Assignment Additions")
+
 # drop down for Category
 category_user_selection = st.selectbox("Select a Category", df["Category"].unique(), index=None)
 
