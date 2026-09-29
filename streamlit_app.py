@@ -33,9 +33,30 @@ st.dataframe(sales_by_month)
 # Here the grouped months are the index and automatically used for the x axis
 st.line_chart(sales_by_month, y="Sales")
 
+
 st.write("## Your additions")
 st.write("### (1) add a drop down for Category (https://docs.streamlit.io/library/api-reference/widgets/st.selectbox)")
 st.write("### (2) add a multi-select for Sub_Category *in the selected Category (1)* (https://docs.streamlit.io/library/api-reference/widgets/st.multiselect)")
 st.write("### (3) show a line chart of sales for the selected items in (2)")
 st.write("### (4) show three metrics (https://docs.streamlit.io/library/api-reference/data/st.metric) for the selected items in (2): total sales, total profit, and overall profit margin (%)")
 st.write("### (5) use the delta option in the overall profit margin metric to show the difference between the overall average profit margin (all products across all categories)")
+
+# drop down for Category
+category_user_selection = st.selectbox("Select a Category", df["Category"].unique(), index=None)
+
+# multi-select for Sub_Category in the selected Category
+sub_category_user_selection = st.multiselect("Select Sub-Category", df[df["Category"] == category_user_selection]["Sub_Category"].unique())
+
+# show a line chart of sales for each selected sub-categories
+st.line_chart(df[df["Sub_Category"].isin(sub_category_user_selection)].groupby(pd.Grouper(freq='ME')).sum(), y="Sales")
+
+#show 3 metrics: total sales, total profit, and overall profit margin (%)
+total_sales = df[df["Sub_Category"].isin(sub_category_user_selection)]["Sales"].sum()
+total_profit = df[df["Sub_Category"].isin(sub_category_user_selection)]["Profit"].sum()
+overall_profit_margin = (total_profit / total_sales) * 100
+col1, col2, col3 = st.columns(3)
+col1.metric("Total Sales", f"${total_sales:,.2f}")
+col2.metric("Total Profit", f"${total_profit:,.2f}")
+# calculate the overall average profit margin (all products across all categories)
+overall_average_profit_margin = (df["Profit"].sum() / df["Sales"].sum()) * 100
+col3.metric("Overall Profit Margin", f"{overall_profit_margin:.2f}%", delta=f"{overall_profit_margin - overall_average_profit_margin:.2f}%")
